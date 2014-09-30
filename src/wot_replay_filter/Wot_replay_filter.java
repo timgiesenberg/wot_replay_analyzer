@@ -78,11 +78,27 @@ public class Wot_replay_filter extends Application {
         TableColumn nationColumn = new TableColumn("Nation");
         TableColumn tankColumn = new TableColumn("Panzer");
         TableColumn mapColumn = new TableColumn("Karte");
+
+        dateColumn.setCellValueFactory(
+            new PropertyValueFactory<Replay,String>("date")
+        );
+        timeColumn.setCellValueFactory(
+            new PropertyValueFactory<Replay,String>("time")
+        );
+        nationColumn.setCellValueFactory(
+            new PropertyValueFactory<Replay,String>("nation")
+        );
+        tankColumn.setCellValueFactory(
+            new PropertyValueFactory<Replay,String>("tank")
+        );
+        mapColumn.setCellValueFactory(
+            new PropertyValueFactory<Replay,String>("map")
+        );
         
         table.getColumns().addAll(dateColumn, timeColumn,
                 nationColumn, tankColumn, mapColumn);
         
-        
+        table.setItems(replays);
         
         btn.setOnAction(new EventHandler<ActionEvent>() {
             
@@ -112,7 +128,7 @@ public class Wot_replay_filter extends Application {
         });
         GridPane grid = new GridPane();
         grid.setHgap(4);
-        grid.setVgap(3);
+        grid.setVgap(1);
         
 //        StackPane root = new StackPane();
 //        root.getChildren().add(btn);
