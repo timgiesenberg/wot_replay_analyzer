@@ -5,10 +5,19 @@
  */
 package wot_replay_filter;
 
+import com.sun.deploy.util.StringUtils;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -39,18 +48,39 @@ public class Wot_replay_filter extends Application {
     private TableView table = new TableView();
     private ListView listView = new ListView();
     
+    
     @Override
-    public void start(Stage primaryStage) {
+    public void start(final Stage primaryStage) {
+        
+
+
         Button btn = new Button();
-        Label directoryLabel =  new Label();
+        ObservableList <Replay> replays = FXCollections.observableArrayList();
+        final Label directoryLabel =  new Label();
         directoryLabel.setText("H:\\World of Tanks\\World_of_Tanks_closed_Beta\\replays");
         btn.setText("Select Directory");
         
+        ObservableList<String> mockFiles = FXCollections.observableArrayList();
         
+        mockFiles.add("20020101_0142_usa-M24_Chaffee_14_siegfried_line.wotreplay");
+        mockFiles.add("20020101_0144_germany-Pro_Ag_A_60_asia_miao.wotreplay");
+        mockFiles.add("20020101_0152_uk-GB12_Conqueror_14_siegfried_line.wotreplay");
+        mockFiles.add("20140305_2223_china-Ch04_T34_1_28_desert.wotreplay");
+        mockFiles.add("20140305_2231_germany-Sturer_Emil_14_siegfried_line.wotreplay");
+        mockFiles.add("20140306_2048_japan-Chi_To_33_fjord.wotreplay");
         
-        TableColumn columnFile = new TableColumn("File");
+        for(String s : mockFiles){
+            replays.add(splitFileName(s));
+        }
         
-        table.getColumns().addAll(columnFile);
+        TableColumn dateColumn = new TableColumn("Datum");
+        TableColumn timeColumn = new TableColumn("Zeit");
+        TableColumn nationColumn = new TableColumn("Nation");
+        TableColumn tankColumn = new TableColumn("Panzer");
+        TableColumn mapColumn = new TableColumn("Karte");
+        
+        table.getColumns().addAll(dateColumn, timeColumn,
+                nationColumn, tankColumn, mapColumn);
         
         
         
@@ -88,9 +118,9 @@ public class Wot_replay_filter extends Application {
 //        root.getChildren().add(btn);
 //        root.getChildren().add(btn);
         
-        grid.add(btn, 1, 1);
-        grid.add(directoryLabel, 2, 1);
-        grid.add(listView, 1, 2);
+        grid.add(directoryLabel, 1, 1);
+        grid.add(btn, 1, 2);
+        grid.add(table, 1, 3);
         
         Scene scene = new Scene(grid, 600, 600);
         
@@ -108,12 +138,48 @@ public class Wot_replay_filter extends Application {
     
     public static Replay splitFileName(String fileName){
         
+        int counter = 0;
         Replay r = new Replay();
-        String[] s = fileName.split("_", 3);
-        String date = s[0];
-        r.setDate(d);
-        System.out.println("Date " + r.getDate());
+        
+        //split date from String
+        String[] dateExtracted = fileName.split("_", 3);
+        String date = dateExtracted[0];
+        r.setDate(dateExtracted[0]);
+        r.setTime(dateExtracted[1]);
+        r.setYear(date.substring(0,4));
+        r.setMonth(date.substring(4,6));
+        r.setDay(date.substring(6));
+        
+        //split nation
+        String[] countryExtracted = dateExtracted[2].split("-");
+        r.setNation(countryExtracted[0]);
+        
+        //split at double integer followed by underscore "_00" to get tank type
+        String[] tankExtracted = countryExtracted[1].split("[\\_][\\d][\\d][\\_]");
+        r.setTank(tankExtracted[0]);
+        
+        //split at dot to have map only
+        String[] mapExtracted = tankExtracted[1].split("\\.");
+        r.setMap(mapExtracted[0]);
         
         return r;
+    }
+    
+    public static int searchCharOccurances(String toSearch){
+        int occurances = 0;
+        
+        for(int i = 0; i < toSearch.length(); i++){
+            if(toSearch.charAt(i) == '_'){
+                occurances++;
+            }
+        }
+        
+        /**
+        while ((i = toSearch.indexOf("_", i++)) != -1 ) {
+            occurances++;
+            i += toSearch.length();
+        }*/
+        
+        return occurances;
     }
 }
