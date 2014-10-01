@@ -115,4 +115,12 @@ public class Replay {
     public void setMap(String map) {
         this.map = map;
     }
+    
+    public void generateDate(){
+        this.date = this.day + "." + this.month + "." + this.year;
+    }
+    
+    public void generateTime(){
+        this.time = this.time.substring(0, 2) + ":" + this.time.substring(2);
+    }
 }
