@@ -130,10 +130,6 @@ public class Wot_replay_filter extends Application {
         grid.setHgap(4);
         grid.setVgap(1);
         
-//        StackPane root = new StackPane();
-//        root.getChildren().add(btn);
-//        root.getChildren().add(btn);
-        
         grid.add(directoryLabel, 1, 1);
         grid.add(btn, 1, 2);
         grid.add(table, 1, 3);
@@ -152,6 +148,11 @@ public class Wot_replay_filter extends Application {
         launch(args);
     }
     
+    /**
+     * Splits a filename and returns a Replay object generated from filename
+     * @param fileName
+     * @return 
+     */
     public static Replay splitFileName(String fileName){
         
         int counter = 0;
@@ -165,6 +166,8 @@ public class Wot_replay_filter extends Application {
         r.setYear(date.substring(0,4));
         r.setMonth(date.substring(4,6));
         r.setDay(date.substring(6));
+        r.generateDate();
+        r.generateTime();
         
         //split nation
         String[] countryExtracted = dateExtracted[2].split("-");
@@ -181,7 +184,13 @@ public class Wot_replay_filter extends Application {
         return r;
     }
     
-    public static int searchCharOccurances(String toSearch){
+    /**
+     * searches how many underscores occure in a string
+     * currently not needed
+     * @param toSearch
+     * @return 
+     */
+    public static int searchUnderscoreOccurances(String toSearch){
         int occurances = 0;
         
         for(int i = 0; i < toSearch.length(); i++){
@@ -189,13 +198,6 @@ public class Wot_replay_filter extends Application {
                 occurances++;
             }
         }
-        
-        /**
-        while ((i = toSearch.indexOf("_", i++)) != -1 ) {
-            occurances++;
-            i += toSearch.length();
-        }*/
-        
         return occurances;
     }
 }
