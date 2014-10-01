@@ -5,58 +5,41 @@
  */
 package wot_replay_filter;
 
-import com.sun.deploy.util.StringUtils;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Application;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 /**
  *
  * @author Timbo
  */
-public class Wot_replay_filter extends Application {
+public class WotReplayAnalyzer extends Application {
     
     private TableView table = new TableView();
     private ListView listView = new ListView();
+    final public Label directoryLabel =  new Label();
     
     
     @Override
     public void start(final Stage primaryStage) {
-        
-
 
         Button btn = new Button();
         ObservableList <Replay> replays = FXCollections.observableArrayList();
-        final Label directoryLabel =  new Label();
+        
         directoryLabel.setText("H:\\World of Tanks\\World_of_Tanks_closed_Beta\\replays");
         btn.setText("Select Directory");
         
@@ -100,32 +83,7 @@ public class Wot_replay_filter extends Application {
         
         table.setItems(replays);
         
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-            
-            @Override
-            public void handle(ActionEvent event) {
-                DirectoryChooser chooser = new DirectoryChooser();
-                chooser.setTitle("JavaFX Projects");
-                chooser.setInitialDirectory(new File("H:\\World of Tanks\\World_of_Tanks_closed_Beta\\replays"));
-                File selectedDirectory = chooser.showDialog(primaryStage);
-                System.out.println(selectedDirectory.getName());
-                
-                try{
-                    directoryLabel.setText(selectedDirectory.getCanonicalPath());
-                    File directory = new File(selectedDirectory.getCanonicalPath());
-                    ObservableList<String> files = FXCollections.observableArrayList(directory.list());
-                    
-                    for(int i = 0; i < files.size(); i++){
-                        System.out.println("Split the list: " + splitFileName(files.get(i)));
-                    }
-                    listView.setItems(files);
-                    
-                
-                } catch (IOException io) {
-                    io.printStackTrace();
-                }
-            }
-        });
+        btn.setOnAction(new DirectoryEventHandler<ActionEvent>());
         GridPane grid = new GridPane();
         grid.setHgap(4);
         grid.setVgap(1);
