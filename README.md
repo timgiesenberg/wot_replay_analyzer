@@ -18,6 +18,7 @@ Thoughts on MoSCoW, 01.10.2014, list may be extended later on.
 * save data as a json/xml file
 * read data from a json/xml file
 * add screenshots to a replay object
+* remember last opened directory (application store? / generadted file?)
 
 
 #### Could
